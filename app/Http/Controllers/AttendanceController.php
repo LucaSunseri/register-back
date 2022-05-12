@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class AttendanceController extends Controller
 {
-    public function create(AttendanceRequest $request)
+    public function create(AttendanceRequest $request): Response
     {
 
         $new_attendece = new Attendance();
@@ -28,7 +28,7 @@ class AttendanceController extends Controller
         return response($new_attendece);
     }
 
-    public function edit(AttendanceRequest $request, $id)
+    public function edit(AttendanceRequest $request, $id): Response
     {
         $attendance = Attendance::findOrFail($id);
 
@@ -44,11 +44,21 @@ class AttendanceController extends Controller
         return response($attendance);
     }
 
-    public function show()
+    public function show(Request $request): Response
     {
-        $attendeces = Attendance::where('user_id', auth('sanctum')->user()->id)->get();
+        $attendances = Attendance::where('user_id', $request->user()->id);
+        $month = $request->query('month');
+        $year = $request->query('year');
 
-        return response($attendeces);
+        if ($month) {
+            $attendances = $attendances->whereMonth('date', $month);
+        }
+
+        if ($year) {
+            $attendances = $attendances->whereYear('date', $year);
+        }
+
+        return response($attendances->get());
     }
 
     // Funzione che controlla la data 
