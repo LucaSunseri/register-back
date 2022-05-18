@@ -8,10 +8,35 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\AttendanceRequest;
 use App\Http\Resources\AttendanceResource;
+use App\Http\Resources\ShowAttendanceResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AttendanceController extends Controller
 {
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $attendances = Attendance::where('user_id', $request->user()->id);
+        $month = $request->query('month');
+        $year = $request->query('year');
+
+        if ($month) {
+            $attendances = $attendances->whereMonth('date', $month);
+        }
+
+        if ($year) {
+            $attendances = $attendances->whereYear('date', $year);
+        }
+
+        return AttendanceResource::collection($attendances->get());
+    }
+
+    public function show($id): ShowAttendanceResource
+    {
+        $attendance = Attendance::find($id);
+
+        return new ShowAttendanceResource($attendance);
+    }
+
     public function create(AttendanceRequest $request): Response
     {
 
@@ -44,23 +69,6 @@ class AttendanceController extends Controller
         $attendance->refresh();
 
         return response($attendance);
-    }
-
-    public function show(Request $request): AnonymousResourceCollection
-    {
-        $attendances = Attendance::where('user_id', $request->user()->id);
-        $month = $request->query('month');
-        $year = $request->query('year');
-
-        if ($month) {
-            $attendances = $attendances->whereMonth('date', $month);
-        }
-
-        if ($year) {
-            $attendances = $attendances->whereYear('date', $year);
-        }
-
-        return AttendanceResource::collection($attendances->get());
     }
 
     // Funzione che controlla la data 

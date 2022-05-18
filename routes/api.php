@@ -21,8 +21,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/activity', [ActivityController::class, 'getAll']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/new-attendece', [AttendanceController::class, 'create']);
+    Route::get('/attendance/index', [AttendanceController::class, 'index']);
+    Route::get('/attendance/show/{id}', [AttendanceController::class, 'show']);
+    Route::post('/attendance/create', [AttendanceController::class, 'create']);
     Route::post('/attendance/edit/{id}', [AttendanceController::class, 'edit']);
-    Route::get('/show-attendece', [AttendanceController::class, 'show']);
+
     Route::get('/logout', [AuthController::class, 'logout']);
 });
