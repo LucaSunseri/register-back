@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,11 +18,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
-
+Route::get('/activity', [ActivityController::class, 'getAll']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/new-attendece', [AttendanceController::class, 'create']);
-    Route::post('/new-attendece/edit/{id}', [AttendanceController::class, 'edit']);
+    Route::post('/attendance/edit/{id}', [AttendanceController::class, 'edit']);
     Route::get('/show-attendece', [AttendanceController::class, 'show']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 });

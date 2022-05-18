@@ -30,4 +30,11 @@ class AuthRequest extends FormRequest
             'password' => 'required|string|confirmed|min:6|max:255',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'password.confirmed' => 'Password non combacia',
+        ];
+    }
 }

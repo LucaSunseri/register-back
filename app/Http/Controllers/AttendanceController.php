@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
-use Illuminate\Support\Carbon;
-use App\Http\Requests\AttendanceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
+use App\Http\Requests\AttendanceRequest;
+use App\Http\Resources\AttendanceResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AttendanceController extends Controller
 {
@@ -44,7 +46,7 @@ class AttendanceController extends Controller
         return response($attendance);
     }
 
-    public function show(Request $request): Response
+    public function show(Request $request): AnonymousResourceCollection
     {
         $attendances = Attendance::where('user_id', $request->user()->id);
         $month = $request->query('month');
@@ -58,13 +60,13 @@ class AttendanceController extends Controller
             $attendances = $attendances->whereYear('date', $year);
         }
 
-        return response($attendances->get());
+        return AttendanceResource::collection($attendances->get());
     }
 
     // Funzione che controlla la data 
     private function checkDate(Request $request, ?int $id = null): ?Response
     {
-        $date = Carbon::createFromFormat("d-m-Y", $request->get('date'));
+        $date = $request->get('date');
         $attendanceQuery = Attendance::where('user_id', $request->user()->id)
             ->whereDate('date', $date);
         if (!is_null($id)) {

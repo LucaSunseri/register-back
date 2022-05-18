@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\LoginRequest;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\UserResource;
-
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -18,7 +18,7 @@ class AuthController extends Controller
             'name' => $request->get('name'),
             'surname' => $request->get('surname'),
             'email' => $request->get('email'),
-            'password' => bcrypt($request->get('password'),),
+            'password' => bcrypt($request->get('password')),
         ]);
 
         return new UserResource($user);
@@ -37,5 +37,12 @@ class AuthController extends Controller
         }
 
         return new UserResource($user);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+
+        return response('Logout avvenuto con successo!');
     }
 }
