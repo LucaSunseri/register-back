@@ -24,7 +24,7 @@ class AttendanceRequest extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'required|string|date_format:d-m-Y',
+            'date' => 'required|string|date_format:Y-m-d',
             'time_start_morning' => 'date_format:H:i',
             'time_end_morning' => 'date_format:H:i',
             'time_start_afternoon' => 'date_format:H:i',
