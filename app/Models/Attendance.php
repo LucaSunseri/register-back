@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Attendance extends Model
 {
@@ -23,4 +24,9 @@ class Attendance extends Model
     protected $casts = [
         'date' => 'date',
     ];
+
+    public function activity()
+    {
+        return $this->belongsTo(Activity::class);
+    }
 }

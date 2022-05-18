@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Attendance;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Activity extends Model
 {
@@ -12,4 +13,9 @@ class Activity extends Model
     protected $fillable = [
         'type'
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }
