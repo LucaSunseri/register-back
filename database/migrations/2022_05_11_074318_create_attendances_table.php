@@ -24,7 +24,6 @@ class CreateAttendancesTable extends Migration
             $table->time('time_end_morning')->nullable();
             $table->time('time_start_afternoon')->nullable();
             $table->time('time_end_afternoon')->nullable();
-            $table->string('signature');
 
             $table->timestamps();
         });

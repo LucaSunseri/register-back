@@ -18,7 +18,6 @@ class Attendance extends Model
         'time_end_morning',
         'time_start_afternoon',
         'time_end_afternoon',
-        'signature',
     ];
 
     protected $casts = [

@@ -27,7 +27,9 @@ class AttendanceController extends Controller
             $attendances = $attendances->whereYear('date', $year);
         }
 
-        return AttendanceResource::collection($attendances->get());
+        $attendances = $attendances->orderBy('date', 'desc')->get();
+
+        return AttendanceResource::collection($attendances);
     }
 
     public function show($id): ShowAttendanceResource

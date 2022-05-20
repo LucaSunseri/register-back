@@ -29,7 +29,6 @@ class AttendanceRequest extends FormRequest
             'time_end_morning' => 'date_format:H:i',
             'time_start_afternoon' => 'date_format:H:i',
             'time_end_afternoon' => 'date_format:H:i',
-            'signature' => 'required|string',
         ];
     }
 }

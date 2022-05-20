@@ -3,6 +3,8 @@
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExportDocumentController;
+use App\Http\Controllers\SignatureController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,4 +29,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/attendance/edit/{id}', [AttendanceController::class, 'edit']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/signature/check', [SignatureController::class, 'checkSignature']);
+    Route::post('/signature/save', [SignatureController::class, 'saveSignature']);
+
+    Route::post('/export/word', [ExportDocumentController::class, 'exportWord']);
 });
