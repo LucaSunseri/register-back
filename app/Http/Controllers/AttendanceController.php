@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -9,27 +10,51 @@ use Illuminate\Support\Carbon;
 use App\Http\Requests\AttendanceRequest;
 use App\Http\Resources\AttendanceResource;
 use App\Http\Resources\ShowAttendanceResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $attendances = Attendance::where('user_id', $request->user()->id);
+        $isNotSuperAdminOrTutor = $this->checkisNotSuperAdminOrTutor($request);
+
+        $attendanceQuery = Attendance::query();
+        if($isNotSuperAdminOrTutor){
+            $attendanceQuery = $attendanceQuery->where('user_id', $request->user()->id);
+        }
+
+        $user = $request->query('user');
         $month = $request->query('month');
         $year = $request->query('year');
 
         if ($month) {
-            $attendances = $attendances->whereMonth('date', $month);
+            $attendanceQuery = $attendanceQuery->whereMonth('date', $month);
         }
 
         if ($year) {
-            $attendances = $attendances->whereYear('date', $year);
+            $attendanceQuery = $attendanceQuery->whereYear('date', $year);
         }
 
-        $attendances = $attendances->orderBy('date', 'desc')->get();
+        if ($user) {
+            $userNameFilters = explode(" ", $user);
+            $attendanceQuery = $attendanceQuery->whereHas('user', function(Builder $query) use($userNameFilters){
+                foreach($userNameFilters as $word){
+                    $query = $query->where(function (Builder $subquery) use($word){
+                        $subquery->where('surname', 'like', '%' . $word . '%')
+                        ->orWhere('name', 'like', '%' . $word . '%');
+                    });
+                }
+            });
+        }
 
-        return AttendanceResource::collection($attendances);
+        $attendanceQuery = $attendanceQuery->orderBy('date', 'desc')->get();
+
+        if($isNotSuperAdminOrTutor){
+            return AttendanceResource::collection($attendanceQuery);
+        }
+        return AttendanceResource::collection($attendanceQuery->sortBy('user.surname'));
     }
 
     public function show($id): ShowAttendanceResource
@@ -41,6 +66,7 @@ class AttendanceController extends Controller
 
     public function create(AttendanceRequest $request): Response
     {
+        $isNotSuperAdminOrTutor = $this->checkisNotSuperAdminOrTutor($request);
 
         $new_attendece = new Attendance();
 
@@ -51,7 +77,11 @@ class AttendanceController extends Controller
         }
 
         $new_attendece->fill($request->all());
-        $new_attendece->user_id = $request->user()->id;
+
+        if($isNotSuperAdminOrTutor) {
+            $new_attendece->user_id = $request->user()->id;  
+        }
+        
         $new_attendece->save();
 
         return response($new_attendece);
@@ -93,5 +123,12 @@ class AttendanceController extends Controller
             return response('Non sei nel futuro!', 422);
         }
         return null;
+    }
+
+    // Funzione che controlla se non è un Tutor o un Super Admin
+    private function checkisNotSuperAdminOrTutor($request) {
+        return $request->user()->roles
+        ->whereNotIn('name', ['super-admin', 'tutor'])
+        ->count() > 0;
     }
 }

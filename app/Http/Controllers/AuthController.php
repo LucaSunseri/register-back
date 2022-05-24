@@ -36,6 +36,8 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // dd($user->getAllPermissions());
+
         return new UserResource($user);
     }
 

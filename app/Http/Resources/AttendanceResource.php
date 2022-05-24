@@ -23,7 +23,11 @@ class AttendanceResource extends JsonResource
             'time_end_morning' =>  $this->formatTime($this->time_end_morning),
             'time_start_afternoon' =>  $this->formatTime($this->time_start_afternoon),
             'time_end_afternoon' =>  $this->formatTime($this->time_end_afternoon),
-            'activity_id' => $this->activity->type
+            'activity_id' => $this->activity->type,
+            'user' => [
+                'name' => $this->user->name,
+                'surname' => $this->user->surname
+            ]
         ];
     }
 

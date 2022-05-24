@@ -25,10 +25,11 @@ class AttendanceRequest extends FormRequest
     {
         return [
             'date' => 'required|string|date_format:Y-m-d',
-            'time_start_morning' => 'date_format:H:i',
-            'time_end_morning' => 'date_format:H:i',
-            'time_start_afternoon' => 'date_format:H:i',
-            'time_end_afternoon' => 'date_format:H:i',
+            'activity_id' => 'required',
+            // 'time_start_morning' => 'date_format:H:i',
+            // 'time_end_morning' => 'date_format:H:i',
+            // 'time_start_afternoon' => 'date_format:H:i',
+            // 'time_end_afternoon' => 'date_format:H:i',
         ];
     }
 }
