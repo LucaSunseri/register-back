@@ -32,13 +32,28 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/attendance/create', [AttendanceController::class, 'create']);
     Route::post('/attendance/edit/{id}', [AttendanceController::class, 'edit']);
 
-    Route::get('/logout', [AuthController::class, 'logout']);
-
     Route::get('/signature/check', [SignatureController::class, 'checkSignature']);
     Route::post('/signature/save', [SignatureController::class, 'saveSignature']);
 
+    Route::get('/logout', [AuthController::class, 'logout']);
+
+    // Route sotto sanctum e il ruolo di super-admin o tutor
     Route::group(['middleware' => ['role:super-admin|tutor']], function () {
         Route::get('/user/developer', [UserController::class, 'getAllDeveloperUser']);
         Route::post('/export/word', [ExportDocumentController::class, 'exportWord']);
+
+        Route::post('/activity/create', [ActivityController::class, 'create']);
+        Route::post('/activity/edit/{id}', [ActivityController::class, 'edit']);
+    });
+
+    // Route sotto sanctum e il ruolo di super-admin
+    Route::group(['middleware' => ['role:super-admin']], function () {
+        Route::post('/role/create', [RoleController::class, 'create']);
+        Route::post('/role/assign', [RoleController::class, 'assign']);
+        Route::post('/role/remove', [RoleController::class, 'remove']);
+
+        Route::post('/permission/create', [RoleController::class, 'create']);
+        Route::post('/permission/assign', [RoleController::class, 'assign']);
+        Route::post('/permission/remove', [RoleController::class, 'remove']);
     });
 });
