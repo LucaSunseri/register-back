@@ -7,6 +7,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\SignatureController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ExportDocumentController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -52,8 +53,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/role/assign', [RoleController::class, 'assign']);
         Route::post('/role/remove', [RoleController::class, 'remove']);
 
-        Route::post('/permission/create', [RoleController::class, 'create']);
-        Route::post('/permission/assign', [RoleController::class, 'assign']);
-        Route::post('/permission/remove', [RoleController::class, 'remove']);
+        Route::post('/permission/create', [PermissionController::class, 'create']);
+        Route::post('/permission/assign', [PermissionController::class, 'assign']);
+        Route::post('/permission/remove', [PermissionController::class, 'remove']);
     });
 });
